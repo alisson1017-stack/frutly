@@ -277,9 +277,6 @@ def select_menu_remover_fruta():
             case 1:
                 return buscar_fruta_por_nome()
             case 2:
-                # print('\nFuncionalidade em desenvolvimento.')
-                # input('\nPressione "Enter" para voltar.')
-                # return remover_fruta()
                 return buscar_fruta_por_id()
             case 3:
                 exibir_lista_frutas()
@@ -395,7 +392,6 @@ def editar_fruta_por_nome():
         busca = input('\nDigite o nome da fruta: ')
         for frutas in dic_frutas:
             if busca == dic_frutas[frutas]['nome']:
-                # print(f'Fruta encontrada! {frutas}')
                 fruta = frutas
                 break
         confirmacao = input(f'''\nDeseja editar a fruta {dic_frutas[fruta]['nome']}?
@@ -546,11 +542,9 @@ def editar_meses():
         escolha = int(input('\nDigite o número do mês escolhido: '))
         if escolha in selecao_meses:
             mes = selecao_meses[escolha]
-            print(f'-monitoramento- mês: {mes}')
+            # print(f'-monitoramento- mês: {mes}') <- MONITORAMENTO
             return select_menu_editar_meses(mes)
         elif escolha == 1:
-            # print('\nFuncionalidade em desenvolvimento')
-            # return editar_meses()
             return adicionar_mes()
         elif escolha == i + 1:
             return main() 
@@ -591,7 +585,7 @@ def confirma_adicionar_mes(mes):
                 for fruta in dic_frutas:
                     dic_meses[mes][fruta] = {}
                     dic_meses[mes][fruta]['vendas'] = 0
-                print(f'\nmonitoramento:\n{dic_meses[mes]}')
+                # print(f'\nmonitoramento:\n{dic_meses[mes]}') <-MONITORAMENTO
                 print(f'\nO mês {mes} foi adicionado com sucesso!')
                 input(f'\nAperte "Enter para voltar.')
                 return editar_meses()
@@ -658,7 +652,7 @@ def alterar_nome_mes(mes):
     match escolha:
         case '1':
             dic_meses[nome] = dic_meses.pop(mes)
-            print(f'\nmonitoramento:\n{dic_meses}') # <- monitoramento
+            # print(f'\nmonitoramento:\n{dic_meses}') # <- monitoramento
             print(f'\nMês renomeado com sucesso.')
             input('\nPressione "Enter" para voltar.')
             return editar_meses()
@@ -741,19 +735,28 @@ def comparar_frutas():
                 exibir_titulo()
                 exibir_subtitulo('Comparar frutas')
                 print(f'\n  - {fruta_a}')
+                id_fruta_a = fruta
                 fruta_encontrada = True
                 break
             else:
                 continue
     if fruta_encontrada:
-        fruta_b = escolha_fruta_b(fruta_a)
-        print(f'\nFruta A: {fruta_a}  |  Fruta B: {fruta_b}')
+        id_fruta_b = escolha_fruta_b(fruta_a)
+        print_header_fruta()
+        exibir_resultado_comparacao(id_fruta_a, id_fruta_b)
+        print('\nteste')
         input('\nAperte "Enter".')
         return comparar()
     else:
         print('\n   ~ Fruta não encontrada.')
         input('\nPressione "Enter" para tentar novamente.')
         return comparar_frutas()
+
+def exibir_resultado_comparacao(fruta_a, fruta_b):
+    margem_a = float(query_info_fruta(fruta_a, 'margem')) * 100
+    print(f'{exibir_info_fruta(fruta_a,'nome', 15)} | {exibir_info_fruta(fruta_a,'id', 8)} | {exibir_info_fruta(fruta_a,'valor', 8)} | {int(margem_a)}%')
+    margem_b = float(query_info_fruta(fruta_b, 'margem')) * 100
+    print(f'{exibir_info_fruta(fruta_b,'nome', 15)} | {exibir_info_fruta(fruta_b,'id', 8)} | {exibir_info_fruta(fruta_b,'valor', 8)} | {int(margem_b)}%')
 
 def escolha_fruta_b(fruta_a):
     fruta_b = input('\nDigite o nome da segunda fruta, ou "x" para cancelar: ')
@@ -762,7 +765,7 @@ def escolha_fruta_b(fruta_a):
     else:
         for fruta in dic_frutas:
             if fruta_b == dic_frutas[fruta]['nome']:
-                return fruta_b
+                return fruta
             else:
                 continue
         print('\n   ~ Fruta não encontrada.')
@@ -771,16 +774,8 @@ def escolha_fruta_b(fruta_a):
         exibir_subtitulo('Comparar frutas')
         print(f'\n  - {fruta_a}')
         return(escolha_fruta_b(fruta_a))
-    
 
-main()
 
-#
-    # i = 0
-    # print('')
-    # for fruta in dic_frutas:
-    #     i += 1
-    #     print(f'{i}. {dic_frutas[fruta]['nome']}')
-    # print(f'{i + 1}. Voltar\n')
 
-# 𝗘𝗱𝗶𝘁𝗮𝗿 𝗔𝗱𝗶𝗰𝗶𝗼𝗻𝗮𝗿 𝗖𝗼𝗺𝗽𝗮𝗿𝗮𝗿 𝗳𝗿𝘂𝘁𝗮𝘀 𝗺𝗲𝘀𝗲𝘀 𝗺𝗲̂𝘀 𝗳𝗿𝘂𝘁𝗮
+if __name__ == '__main__':
+    main()
