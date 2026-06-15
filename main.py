@@ -722,6 +722,24 @@ def comparar():
     input('\nAperte "Enter" para continuar.')
     return main()
 
+
+def escolha_fruta_b(fruta_a):
+    fruta_b = input('\nDigite o nome da segunda fruta, ou "x" para cancelar: ')
+    if fruta_b == 'x':
+        return comparar()
+    else:
+        for fruta in dic_frutas:
+            if fruta_b == dic_frutas[fruta]['nome']:
+                return fruta
+            else:
+                continue
+        print('\n   ~ Fruta não encontrada.')
+        input('\nPressione "Enter" para tentar novamente.')
+        exibir_titulo()
+        exibir_subtitulo('Comparar frutas')
+        print(f'\n  - {fruta_a}')
+        return(escolha_fruta_b(fruta_a))
+
 def comparar_frutas():
     exibir_titulo()
     exibir_subtitulo('Comparar frutas')
@@ -742,39 +760,71 @@ def comparar_frutas():
                 continue
     if fruta_encontrada:
         id_fruta_b = escolha_fruta_b(fruta_a)
-        print_header_fruta()
-        exibir_resultado_comparacao(id_fruta_a, id_fruta_b)
-        print('\nteste')
-        input('\nAperte "Enter".')
-        return comparar()
+        try:
+            exibir_resultado_comparacao(id_fruta_a, id_fruta_b)
+            input('\nAperte "Enter".')
+            return comparar()
+        except:
+            print('\n   ~Ocorreu um erro')
+            input('\nAperte "Enter".')
+            return comparar_frutas()
     else:
         print('\n   ~ Fruta não encontrada.')
         input('\nPressione "Enter" para tentar novamente.')
         return comparar_frutas()
 
 def exibir_resultado_comparacao(fruta_a, fruta_b):
-    margem_a = float(query_info_fruta(fruta_a, 'margem')) * 100
-    print(f'{exibir_info_fruta(fruta_a,'nome', 15)} | {exibir_info_fruta(fruta_a,'id', 8)} | {exibir_info_fruta(fruta_a,'valor', 8)} | {int(margem_a)}%')
-    margem_b = float(query_info_fruta(fruta_b, 'margem')) * 100
-    print(f'{exibir_info_fruta(fruta_b,'nome', 15)} | {exibir_info_fruta(fruta_b,'id', 8)} | {exibir_info_fruta(fruta_b,'valor', 8)} | {int(margem_b)}%')
-
-def escolha_fruta_b(fruta_a):
-    fruta_b = input('\nDigite o nome da segunda fruta, ou "x" para cancelar: ')
-    if fruta_b == 'x':
-        return comparar()
-    else:
-        for fruta in dic_frutas:
-            if fruta_b == dic_frutas[fruta]['nome']:
-                return fruta
-            else:
-                continue
-        print('\n   ~ Fruta não encontrada.')
-        input('\nPressione "Enter" para tentar novamente.')
-        exibir_titulo()
-        exibir_subtitulo('Comparar frutas')
-        print(f'\n  - {fruta_a}')
-        return(escolha_fruta_b(fruta_a))
-
+    print(f'''
+{dic_frutas[fruta_a]['nome']}:\n
+{'mês'.ljust(10)} | {'vendas'.ljust(8)} | {'bruto'.ljust(10)} | líquido
+{'-' * 60}''')
+    margem_a = float(query_info_fruta(fruta_a, 'margem'))
+    bruto_soma_a = 0
+    liquido_soma_a = 0
+    vendas_soma_a = 0
+    for mes in dic_meses:
+        vendas = int(dic_meses[mes][fruta_a]['vendas'])
+        vendas_soma_a += vendas
+        # print(f'\nmonitoramento: vendas = {vendas_soma_a}')
+        valor = float(dic_frutas[fruta_a]['valor'])
+        
+        bruto = int(vendas * valor)
+        bruto_soma_a += bruto 
+        # print(f'\nmonitoramento: bruto = {bruto_soma_a}')
+        bruto_str = f'{bruto:,.2f}'
+        
+        liquido = int(bruto * margem_a)
+        liquido_soma_a += liquido
+        # print(f'\nmonitoramento: liquido = {liquido_soma_a}')
+        print(f'{mes.ljust(10)} | {str(vendas).ljust(8)} | R${bruto_str.ljust(12)} | R${liquido:,.2f}')
+    print(f'Vendas totais: {vendas_soma_a:,} | Valor bruto total: {bruto_soma_a:,.2f} | Valor liquido total: {liquido_soma_a:,.2f}')
+    
+    print(f'''
+{dic_frutas[fruta_b]['nome']}:\n
+{'mês'.ljust(10)} | {'vendas'.ljust(8)} | {'bruto'.ljust(10)} | líquido
+{'-' * 60}''')
+    margem_b = float(query_info_fruta(fruta_b, 'margem'))
+    bruto_soma_b = 0
+    liquido_soma_b = 0
+    vendas_soma_b = 0
+    for mes in dic_meses:
+        vendas = int(dic_meses[mes][fruta_b]['vendas'])
+        vendas_soma_b += vendas
+        # print(f'\nmonitoramento: vendas = {vendas_soma_a}')
+        valor = float(dic_frutas[fruta_b]['valor'])
+        
+        bruto = int(vendas * valor)
+        bruto_soma_b += bruto 
+        # print(f'\nmonitoramento: bruto = {bruto_soma_a}')
+        bruto_str = f'{bruto:,.2f}'
+        
+        liquido = int(bruto * margem_b)
+        liquido_soma_b += liquido
+        # print(f'\nmonitoramento: liquido = {liquido_soma_a}')
+        print(f'{mes.ljust(10)} | {str(vendas).ljust(8)} | R${bruto_str.ljust(12)} | R${liquido:,.2f}')
+    print(f'Vendas totais: {vendas_soma_b:,} | Valor bruto total: {bruto_soma_b:,.2f} | Valor liquido total: {liquido_soma_b:,.2f}')
+    input(f'Aperte "Enter".')
+    return comparar_frutas()
 
 
 if __name__ == '__main__':
