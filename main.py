@@ -109,7 +109,6 @@ def listar_meses():
 
 def exibir_menu_listar_meses():
     exibir_titulo()
-    exibir_titulo()
     select_mes.clear()
     exibir_subtitulo('Listar Meses')
     i = 0
@@ -774,14 +773,21 @@ def comparar_frutas():
         return comparar_frutas()
 
 def exibir_resultado_comparacao(fruta_a, fruta_b):
+    exibir_titulo()
+    nome_fruta_a = dic_frutas[fruta_a]['nome']
+    nome_fruta_b = dic_frutas[fruta_b]['nome']
+    exibir_subtitulo(f'{nome_fruta_a} x {nome_fruta_b}')
+    
     print(f'''
-{dic_frutas[fruta_a]['nome']}:\n
+{nome_fruta_a}:\n
 {'mês'.ljust(10)} | {'vendas'.ljust(8)} | {'bruto'.ljust(10)} | líquido
 {'-' * 60}''')
+    
     margem_a = float(query_info_fruta(fruta_a, 'margem'))
     bruto_soma_a = 0
     liquido_soma_a = 0
     vendas_soma_a = 0
+    
     for mes in dic_meses:
         vendas = int(dic_meses[mes][fruta_a]['vendas'])
         vendas_soma_a += vendas
@@ -797,16 +803,19 @@ def exibir_resultado_comparacao(fruta_a, fruta_b):
         liquido_soma_a += liquido
         # print(f'\nmonitoramento: liquido = {liquido_soma_a}')
         print(f'{mes.ljust(10)} | {str(vendas).ljust(8)} | R${bruto_str.ljust(12)} | R${liquido:,.2f}')
-    print(f'Vendas totais: {vendas_soma_a:,} | Valor bruto total: {bruto_soma_a:,.2f} | Valor liquido total: {liquido_soma_a:,.2f}')
     
+    print(f'{'-' * 80}')
+    print(f'Vendas totais: {vendas_soma_a:,} | Valor bruto total: R${bruto_soma_a:,.2f} | Valor liquido total: R${liquido_soma_a:,.2f}')
     print(f'''
-{dic_frutas[fruta_b]['nome']}:\n
+{nome_fruta_b}:\n
 {'mês'.ljust(10)} | {'vendas'.ljust(8)} | {'bruto'.ljust(10)} | líquido
 {'-' * 60}''')
+    
     margem_b = float(query_info_fruta(fruta_b, 'margem'))
     bruto_soma_b = 0
     liquido_soma_b = 0
     vendas_soma_b = 0
+    
     for mes in dic_meses:
         vendas = int(dic_meses[mes][fruta_b]['vendas'])
         vendas_soma_b += vendas
@@ -822,10 +831,51 @@ def exibir_resultado_comparacao(fruta_a, fruta_b):
         liquido_soma_b += liquido
         # print(f'\nmonitoramento: liquido = {liquido_soma_a}')
         print(f'{mes.ljust(10)} | {str(vendas).ljust(8)} | R${bruto_str.ljust(12)} | R${liquido:,.2f}')
-    print(f'Vendas totais: {vendas_soma_b:,} | Valor bruto total: {bruto_soma_b:,.2f} | Valor liquido total: {liquido_soma_b:,.2f}')
-    input(f'Aperte "Enter".')
+    
+    print(f'{'-' * 80}')
+    print(f'Vendas totais: {vendas_soma_b:,} | Valor bruto total: R${bruto_soma_b:,.2f} | Valor liquido total: R${liquido_soma_b:,.2f}')
+    print(f'{'-' * 80}')
+    exibir_mensagem_comparacao(nome_fruta_a, vendas_soma_a, bruto_soma_a, liquido_soma_a, nome_fruta_b, vendas_soma_b, bruto_soma_b, liquido_soma_b)
+    
+    input(f'\n  Aperte "Enter" para voltar.')
     return comparar_frutas()
 
+def mensagem_vendas(fruta_vencedora, fruta_perdedora, diferenca_venda):
+    print(f'\nVendas:')
+    print(f'{fruta_vencedora} vendeu {diferenca_venda:,} unidade a mais que {fruta_perdedora}.')
+
+def mensagem_bruto(fruta_vencedora, fruta_perdedora, diferenca_bruto):
+    print(f'\nValor bruto:')
+    print(f'{fruta_vencedora} teve um faturamento bruto R${diferenca_bruto:,.2f} maior do que {fruta_perdedora}.')
+
+def mensagem_liquido(fruta_vencedora, fruta_perdedora, diferenca_liquido):
+    print(f'\nValor líquido:')
+    print(f'{fruta_vencedora} teve um faturamento líquido R${diferenca_liquido:,.2f} maior do que {fruta_perdedora}.')
+
+def exibir_mensagem_comparacao(nome_fruta_a, vendas_soma_a, bruto_soma_a, liquido_soma_a, nome_fruta_b, vendas_soma_b, bruto_soma_b, liquido_soma_b):
+
+    diferenca_venda = vendas_soma_a - vendas_soma_b if vendas_soma_a > vendas_soma_b else vendas_soma_b - vendas_soma_a
+    diferenca_bruto = bruto_soma_a - bruto_soma_b if bruto_soma_a > bruto_soma_b else bruto_soma_b - bruto_soma_a
+    diferenca_liquido = liquido_soma_a - liquido_soma_b if liquido_soma_a > liquido_soma_b else liquido_soma_b - liquido_soma_a
+
+    if vendas_soma_a == vendas_soma_b:
+        print(f'\nAmbas frutas venderam {vendas_soma_a} unidades.')
+    else:
+        mensagem_vendas(nome_fruta_a, nome_fruta_b, diferenca_venda) if vendas_soma_a > vendas_soma_b else mensagem_vendas(nome_fruta_b, nome_fruta_a, diferenca_venda)
+    
+    if bruto_soma_a == bruto_soma_b:
+        print(f'\nAmbas frutas venderam R${bruto_soma_a:,.2f} de faturamento bruto.')
+    else:
+        mensagem_bruto(nome_fruta_a, nome_fruta_b, diferenca_bruto) if bruto_soma_a > bruto_soma_b else mensagem_bruto(nome_fruta_b, nome_fruta_a, diferenca_bruto)
+    
+    if liquido_soma_a == liquido_soma_b:
+        print(f'\nAmbas frutas venderam R${liquido_soma_a:,.2f} de faturamento líquido.')
+    else:
+        mensagem_liquido(nome_fruta_a, nome_fruta_b, diferenca_liquido) if liquido_soma_a > liquido_soma_b else mensagem_liquido(nome_fruta_b, nome_fruta_a, diferenca_liquido)
+
+
+def comparar_meses():
+    exibir_menu_listar_meses()
 
 if __name__ == '__main__':
     main()
